@@ -33,6 +33,7 @@ const ItemList = () => {
 
       <form onSubmit={handleAddItem} style={{
         display: 'flex',
+        flexWrap: 'wrap',
         gap: '0.5rem',
         marginBottom: '1.5rem'
       }}>
@@ -62,6 +63,7 @@ const ItemList = () => {
             cursor: 'pointer',
             fontSize: '1rem',
             fontWeight: '500',
+            flexWrap: "hard",
             transition: 'background-color 0.3s ease',
             textTransform: 'uppercase'
           }}

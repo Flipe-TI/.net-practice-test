@@ -3,12 +3,34 @@ import React, { useState } from 'react';
 const ItemList = () => {
   const [items, setItems] = useState([]);
   const [newItem, setNewItem] = useState('');
+  const [editingId, setEditingId] = useState(null);
+  const [editedText, setEditedText] = useState('');
 
   const handleAddItem = (e) => {
     e.preventDefault();
     if (newItem.trim()) {
-      setItems([...items, newItem.trim()]);
+      setItems([...items, { id: Date.now(), text: newItem.trim() }]);
       setNewItem('');
+    }
+  };
+
+  const handleDeleteItem = (id) => {
+    setItems(items.filter(item => item.id !== id));
+  };
+
+  const startEditing = (id, text) => {
+    setEditingId(id);
+    setEditedText(text);
+  };
+
+  const handleEditItem = (e, id) => {
+    e.preventDefault();
+    if (editedText.trim()) {
+      setItems(items.map(item => 
+        item.id === id ? { ...item, text: editedText.trim() } : item
+      ));
+      setEditingId(null);
+      setEditedText('');
     }
   };
 
@@ -63,7 +85,6 @@ const ItemList = () => {
             cursor: 'pointer',
             fontSize: '1rem',
             fontWeight: '500',
-            flexWrap: "hard",
             transition: 'background-color 0.3s ease',
             textTransform: 'uppercase'
           }}
@@ -77,9 +98,9 @@ const ItemList = () => {
         padding: 0,
         margin: 0
       }}>
-        {items.map((item, index) => (
+        {items.map((item) => (
           <li
-            key={index}
+            key={item.id}
             style={{
               padding: '0.8rem',
               margin: '0.5rem 0',
@@ -88,13 +109,51 @@ const ItemList = () => {
               boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
               display: 'flex',
               alignItems: 'center',
+              justifyContent: 'space-between',
               animation: 'slideIn 0.3s ease',
               fontSize: '1.1rem',
               color: '#34495e'
             }}
           >
-            <span style={{ marginRight: '0.5rem' }}>•</span>
-            {item}
+            {editingId === item.id ? (
+              <form onSubmit={(e) => handleEditItem(e, item.id)} style={{ flex: 1 }}>
+                <input
+                  type="text"
+                  value={editedText}
+                  onChange={(e) => setEditedText(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '0.5rem',
+                    border: '2px solid #3498db',
+                    borderRadius: '6px',
+                    outline: 'none'
+                  }}
+                  autoFocus
+                />
+              </form>
+            ) : (
+              <div style={{ flex: 1 }} onClick={() => startEditing(item.id, item.text)}>
+                <span style={{ marginRight: '0.5rem' }}>•</span>
+                {item.text}
+              </div>
+            )}
+
+            <div style={{ display: 'flex', gap: '0.5rem', marginLeft: '1rem' }}>
+              <button
+                onClick={() => handleDeleteItem(item.id)}
+                style={{
+                  padding: '0.4rem 0.8rem',
+                  backgroundColor: '#e74c3c',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '6px',
+                  cursor: 'pointer',
+                  transition: 'background-color 0.3s ease'
+                }}
+              >
+                Remover
+              </button>
+            </div>
           </li>
         ))}
       </ul>
@@ -112,7 +171,7 @@ const ItemList = () => {
         }
         
         button:hover {
-          background-color: #2980b9 !important;
+          opacity: 0.9;
         }
         
         input:focus {

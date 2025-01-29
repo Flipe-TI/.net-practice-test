@@ -2,7 +2,7 @@
 
 class Program{
     static void Main(){
-        decimal soma =0;
+        decimal soma = 0;
         string entrada;
 
         Console.WriteLine("Digite números para somar ou 'sair' para encerrar:");
